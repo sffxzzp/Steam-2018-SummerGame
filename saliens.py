@@ -97,6 +97,7 @@ class saliens:
 		self.time = 0
 		self.bossScore = 0
 		self.tmpScore = 0
+		self.help = 0
 	def myprint(self, string):
 		try:
 			print(string)
@@ -295,15 +296,24 @@ class saliens:
 				time.sleep(1)
 				self.getScoreInfo(errorTime+1)
 	def getBestPlanet(self):
-		availPlanets = json.loads(weblib().get(self.apiStart+'/GetPlanets/v0001/?active_only=1&language='+self.language, self.name))["response"]["planets"]
-		self.availPlanets = []
-		for planet in availPlanets:
-			self.availPlanets.append([planet["id"], self.getZoneInfo(planet["id"])]);
-		self.difficulty = 0
-		for planet in self.availPlanets:
-			if planet[1]>self.difficulty:
-				self.difficulty = planet[1]
-				self.bestPlanet = planet[0]
+		if self.help == 1:
+			availPlanets = json.loads(weblib().get(self.apiStart+'/GetPlanets/v0001/?active_only=1&language='+self.language, self.name))["response"]["planets"]
+			bestProgress = 0
+			for planet in availPlanets:
+				if planet["state"]["capture_progress"] > bestProgress:
+					bestProgress = planet["state"]["capture_progress"]
+					self.difficulty = 1
+					self.bestPlanet = planet["id"]
+		else:
+			availPlanets = json.loads(weblib().get(self.apiStart+'/GetPlanets/v0001/?active_only=1&language='+self.language, self.name))["response"]["planets"]
+			self.availPlanets = []
+			for planet in availPlanets:
+				self.availPlanets.append([planet["id"], self.getZoneInfo(planet["id"])]);
+			self.difficulty = 0
+			for planet in self.availPlanets:
+				if planet[1]>self.difficulty:
+					self.difficulty = planet[1]
+					self.bestPlanet = planet[0]
 	def getZoneInfo(self, planetId):
 		planetInfo = json.loads(weblib().get(self.apiStart+'/GetPlanet/v0001/?id='+planetId+'&language='+self.language, self.name))["response"]["planets"][0]
 		zones = planetInfo["zones"]
@@ -355,34 +365,11 @@ class saliens:
 				self.getPlayerInfo()
 			self.getPlanetInfo()
 			self.getHardZone()
-	def getLowestPlanet(self):
-		availPlanets = json.loads(weblib().get(self.apiStart+'/GetPlanets/v0001/?active_only=1&language='+self.language, self.name))["response"]["planets"]
-		bestProgress = 0
-		for planet in availPlanets:
-			if planet["state"]["capture_progress"] > bestProgress:
-				bestProgress = planet["state"]["capture_progress"]
-				self.bestPlanet = planet["id"]
 	def helpOthers(self):
 		self.myprint("%s|Bot: %s|HelpOthers" % (getTime(), self.name))
-		self.getLowestPlanet()
 		self.difficulty = 1
-		if "active_planet" in self.playerInfo:
-			if self.bestPlanet != self.playerInfo["active_planet"]:
-				self.leavePlanet()
-				self.joinPlanet(self.bestPlanet)
-				self.getPlayerInfo()
-		else:
-			self.joinPlanet(self.bestPlanet)
-			self.getPlayerInfo()
-		self.getPlanetInfo()
-		self.getHardZone()
-		if self.getJoinInfo():
-			time.sleep(85)
-			self.getScoreInfo()
-			self.getPlayerInfo()
-		else:
-			self.getPlayerInfo()
-			self.getBestPlanet()
+		self.help = 1
+		self.getBestPlanet()
 
 def handler(data):
 	bot = saliens()
@@ -394,37 +381,33 @@ def handler(data):
 	bot.getBestPlanet()
 	while True:
 		if int(bot.playerInfo["level"]) >= 21:
-			try:
-				bot.helpOthers()
-			except:
-				pass
-		else:
-			try:
-				if "active_planet" in bot.playerInfo:
-					if bot.bestPlanet != bot.playerInfo["active_planet"]:
-						bot.leavePlanet()
-						bot.joinPlanet(bot.bestPlanet)
-						bot.getPlayerInfo()
-				else:
+			bot.helpOthers()
+		try:
+			if "active_planet" in bot.playerInfo:
+				if bot.bestPlanet != bot.playerInfo["active_planet"]:
+					bot.leavePlanet()
 					bot.joinPlanet(bot.bestPlanet)
 					bot.getPlayerInfo()
-				bot.getPlanetInfo()
-				bot.getHardZone()
-				if bot.difficulty == 4:
-					if bot.joinBossZone():
-						bot.fightBoss()
-					continue
-				if bot.getJoinInfo():
-					time.sleep(85)
-					bot.getScoreInfo()
-					bot.getPlayerInfo()
-					if "active_zone_game" in bot.playerInfo:
-						bot.bug(bot.playerInfo["active_zone_game"])
-				else:
-					bot.getPlayerInfo()
-					bot.getBestPlanet()
-			except:
-				pass
+			else:
+				bot.joinPlanet(bot.bestPlanet)
+				bot.getPlayerInfo()
+			bot.getPlanetInfo()
+			bot.getHardZone()
+			if bot.difficulty == 4:
+				if bot.joinBossZone():
+					bot.fightBoss()
+				continue
+			if bot.getJoinInfo():
+				time.sleep(85)
+				bot.getScoreInfo()
+				bot.getPlayerInfo()
+				if "active_zone_game" in bot.playerInfo:
+					bot.bug(bot.playerInfo["active_zone_game"])
+			else:
+				bot.getPlayerInfo()
+				bot.getBestPlanet()
+		except:
+			pass
 
 def main():
 	try:
