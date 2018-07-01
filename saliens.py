@@ -162,19 +162,24 @@ class saliens:
 			},
 		self.name)
 	def joinBossZone(self):
-		req = weblib().npost(self.apiStart+'/JoinBossZone/v0001/',
-			{
-				"zone_position": self.zone_position,
-				"access_token": self.token
-			},
-		self.name)
-		eresult = int(findstr('\d+', req[1]["X-eresult"])[0])
-		if eresult != 1:
+		self.myprint("%s|Bot: %s|JoinBossZone: %s" % (getTime(), self.name, self.zone_position))
+		try:
+			req = weblib().npost(self.apiStart+'/JoinBossZone/v0001/',
+				{
+					"zone_position": self.zone_position,
+					"access_token": self.token
+				},
+			self.name)
+			eresult = int(findstr('\d+', req[1]["X-eresult"])[0])
+			if eresult != 1:
+				self.myprint("%s|Bot: %s|JoinBossZone: %s|Failed|RestartInstance" % (getTime(), self.name, self.zone_position))
+				return False
+			else:
+				time.sleep(4)
+				return True
+		except:
 			self.myprint("%s|Bot: %s|JoinBossZone: %s|Failed|RestartInstance" % (getTime(), self.name, self.zone_position))
 			return False
-		else:
-			time.sleep(4)
-			return True
 	def fightBoss(self):
 		bossFailsAllowed = 10
 		nextHeal = getTimestamp() + random.randint(120, 180)
