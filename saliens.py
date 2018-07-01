@@ -95,8 +95,6 @@ class saliens:
 		self.difficulty = 0
 		self.language = 'schinese'
 		self.time = 0
-		self.bossScore = 0
-		self.tmpScore = 0
 		self.help = 0
 	def myprint(self, string):
 		try:
@@ -180,7 +178,6 @@ class saliens:
 	def fightBoss(self):
 		bossFailsAllowed = 10
 		nextHeal = getTimestamp() + random.randint(120, 180)
-		self.bossScore += self.tmpScore
 		while True:
 			useHeal = 0
 			damageToBoss = 1
@@ -217,22 +214,18 @@ class saliens:
 			for player in bossPlayers:
 				if player["accountid"] == self.accountid:
 					myPlayer = player
-					self.tmpScore = int(player["xp_earned"])
-					self.myprint("%s|Bot: %s|BossFight|HP: %s/%s|Score: %s" % (getTime(), self.name, player["hp"], player["max_hp"], player["xp_earned"]))
+					self.myprint("%s|Bot: %s|BossFight|HP: %s/%s" % (getTime(), self.name, player["hp"], player["max_hp"]))
 					break
 			if "game_over" in res:
 				if res["game_over"] == True:
-					if myPlayer != None:
-						self.bossScore += myPlayer["xp_earned"]
-					self.myprint("%s|Bot: %s|BossFight|GameOver|TotalScore: %s" % (getTime(), self.name, str(self.bossScore)))
-					self.bossScore = 0
+					self.myprint("%s|Bot: %s|BossFight|GameOver|TotalScore: %s" % (getTime(), self.name, player["xp_earned"]))
 					break
 			if "waiting_for_players" in res:
 				if res["waiting_for_players"] == True:
 					self.myprint("%s|Bot: %s|BossFight|WaitingForPlayers" % (getTime(), self.name))
 					continue
 			if myPlayer != None:
-				self.myprint("%s|Bot: %s|BossFight|Lv: %s => %s|Exp Earned: %s" % (getTime(), self.name, myPlayer["level_on_join"], myPlayer["new_level"], str(int(myPlayer["xp_earned"])+self.bossScore)))
+				self.myprint("%s|Bot: %s|BossFight|Lv: %s => %s|Exp Earned: %s" % (getTime(), self.name, myPlayer["level_on_join"], myPlayer["new_level"], myPlayer["xp_earned"]))
 			self.myprint("%s|Bot: %s|BossFight|Boss HP: %s/%s|Lasers: %s|Team Heals: %s" % (getTime(), self.name, bossStatus["boss_hp"], bossStatus["boss_max_hp"], res["num_laser_uses"], res["num_team_heals"]))
 			time.sleep(5)
 	def getJoinInfo(self):
