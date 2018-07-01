@@ -225,6 +225,7 @@ class saliens:
 					if myPlayer != None:
 						self.bossScore += myPlayer["xp_earned"]
 					self.myprint("%s|Bot: %s|BossFight|GameOver|TotalScore: %s" % (getTime(), self.name, str(self.bossScore)))
+					self.bossScore = 0
 					break
 			if "waiting_for_players" in res:
 				if res["waiting_for_players"] == True:
