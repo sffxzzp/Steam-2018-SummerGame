@@ -6,15 +6,17 @@ Recommend: phuslu/pybuild3
 
 # Usage
 
-Use account.py to generate config files.
+Use account.py to generate config files.（Each time add an account config to configs folder
 
 And use saliens.py to farm exp.
 
 # Features
 
-Already support when meeting bug and boss.
-
-Priority: difficulty.
+* Allow multiple accounts.
+* Join zone automaticly.
+* Could switch planet.
+* Will try upload score when bot meets exploit. (Almost fixed by Valve, but could still upload 10x score at best.
+* Fight boss.
 
 **Will Not Update If Not Necessary**
 
