@@ -16,4 +16,6 @@ Already support when meeting bug and boss.
 
 Priority: difficulty.
 
-**Will Not Update If No Necessary**
+**Will Not Update If Not Necessary**
+
+**For SChinese Users, Not Tested With English Systems**
