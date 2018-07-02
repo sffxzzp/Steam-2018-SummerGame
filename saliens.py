@@ -118,10 +118,14 @@ class saliens:
 		team = ""
 		if "clan_info" in self.playerInfo:
 			team = "|Team: " + self.playerInfo["clan_info"]["name"]
-		if "active_planet" in self.playerInfo:
-			self.myprint("%s|Bot: %s|PlanetId: %s|Level: %s|Exp: %s/%s%s" % (getTime(), self.name, self.playerInfo["active_planet"], self.playerInfo["level"], self.playerInfo["score"], self.playerInfo["next_level_score"], team))
+		if "next_level_score" in self.playerInfo:
+			nextLevel = self.playerInfo["next_level_score"]
 		else:
-			self.myprint("%s|Bot: %s|Level: %s|Exp: %s/%s%s" % (getTime(), self.name, self.playerInfo["level"], self.playerInfo["score"], self.playerInfo["next_level_score"], team))
+			nextLevel = "infinity"
+		if "active_planet" in self.playerInfo:
+			self.myprint("%s|Bot: %s|PlanetId: %s|Level: %s|Exp: %s/%s%s" % (getTime(), self.name, self.playerInfo["active_planet"], self.playerInfo["level"], self.playerInfo["score"], nextLevel, team))
+		else:
+			self.myprint("%s|Bot: %s|Level: %s|Exp: %s/%s%s" % (getTime(), self.name, self.playerInfo["level"], self.playerInfo["score"], nextLevel, team))
 	def getPlanetInfo(self, planetId=None):
 		if planetId==None:
 			planetId = self.playerInfo["active_planet"]
