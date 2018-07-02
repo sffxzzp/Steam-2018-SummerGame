@@ -53,10 +53,11 @@ class weblib:
 	}
 	jar = requests.cookies.RequestsCookieJar()
 	def myprint(self, string):
-		try:
-			print(string)
-		except:
-			print("Network Error!")
+		pass
+		# try:
+		# 	print(string)
+		# except:
+		# 	print("Network Error!")
 	def get(self, url, name=''):
 		try:
 			req = requests.get(url, headers = self.headers, cookies = self.jar, timeout=90)
@@ -146,14 +147,14 @@ class saliens:
 			self.getPlayerInfo()
 			if "active_planet" in self.playerInfo:
 				errorTime += 1
-				self.myprint("%s|Bot: %s|LeaveGame|Failed|Retry after 10s..." % (getTime(), self.name))
+				# self.myprint("%s|Bot: %s|LeaveGame|Failed|Retry after 10s..." % (getTime(), self.name))
 				time.sleep(10)
 				self.leaveGame()
 			else:
 				break
 		self.getPlayerInfo()
 		if "active_planet" in self.playerInfo:
-			self.myprint("%s|Bot: %s|LeavePlanet|Failed|RestartInstance" % (getTime(), self.name))
+			# self.myprint("%s|Bot: %s|LeavePlanet|Failed|RestartInstance" % (getTime(), self.name))
 			return False
 	def leaveGame(self, gameid=-1):
 		if gameid==-1:
@@ -176,13 +177,13 @@ class saliens:
 			self.name)
 			eresult = int(findstr('\d+', req[1]["X-eresult"])[0])
 			if eresult != 1:
-				self.myprint("%s|Bot: %s|JoinBossZone: %s|Failed|RestartInstance" % (getTime(), self.name, self.zone_position))
+				# self.myprint("%s|Bot: %s|JoinBossZone: %s|Failed|RestartInstance" % (getTime(), self.name, self.zone_position))
 				return False
 			else:
 				time.sleep(4)
 				return True
 		except:
-			self.myprint("%s|Bot: %s|JoinBossZone: %s|Failed|RestartInstance" % (getTime(), self.name, self.zone_position))
+			# self.myprint("%s|Bot: %s|JoinBossZone: %s|Failed|RestartInstance" % (getTime(), self.name, self.zone_position))
 			return False
 	def fightBoss(self):
 		bossFailsAllowed = 10
@@ -206,12 +207,12 @@ class saliens:
 			eresult = int(findstr('\d+', req[1]["X-eresult"])[0])
 			res = json.loads(req[0])["response"]
 			if eresult == 11:
-				self.myprint("%s|Bot: %s|BossFight|InvalidState|RestartInstance" % (getTime(), self.name))
+				# self.myprint("%s|Bot: %s|BossFight|InvalidState|RestartInstance" % (getTime(), self.name))
 				break
 			if eresult != 1:
 				bossFailsAllowed -= 1
 				if bossFailsAllowed < 1:
-					self.myprint("%s|Bot: %s|BossFight|ErrorTooMuch|RestartInstance" % (getTime(), self.name))
+					# self.myprint("%s|Bot: %s|BossFight|ErrorTooMuch|RestartInstance" % (getTime(), self.name))
 					break
 			if "boss_status" in res:
 				if "boss_players" not in res["boss_status"]:
@@ -261,15 +262,15 @@ class saliens:
 					skipped = "|ZoneSkipped"
 				else:
 					skipped = ""
-				self.myprint("%s|Bot: %s%s|Msg: %s|Retry after 10s..." % (getTime(), self.name, skipped, req[1]["X-error_message"]))
+				# self.myprint("%s|Bot: %s%s|Msg: %s|Retry after 10s..." % (getTime(), self.name, skipped, req[1]["X-error_message"]))
 				time.sleep(10)
 				return False
 	def bug(self, gameid):
-		self.myprint("%s|Bot: %s|AlreadyInGame|GameId: %s|BUG???" % (getTime(), self.name, str(gameid)))
+		# self.myprint("%s|Bot: %s|AlreadyInGame|GameId: %s|BUG???" % (getTime(), self.name, str(gameid)))
 		stillBug = True
 		while stillBug == True:
 			stillBug = self.getScoreInfo(1)
-		self.myprint("%s|Bot: %s|AlreadyInGame|GameId: %s|LeaveGame" % (getTime(), self.name, str(gameid)))
+		# self.myprint("%s|Bot: %s|AlreadyInGame|GameId: %s|LeaveGame" % (getTime(), self.name, str(gameid)))
 		self.leaveGame(gameid)
 	def getScoreInfo(self, errorTime=0):
 		if errorTime == 0:
@@ -295,7 +296,7 @@ class saliens:
 			return True
 		else:
 			if errorTime > 1:
-				self.myprint("%s|Bot: %s|UploadScore|Failed" % (getTime(), self.name))
+				# self.myprint("%s|Bot: %s|UploadScore|Failed" % (getTime(), self.name))
 				return False
 			else:
 				time.sleep(1)
@@ -358,7 +359,7 @@ class saliens:
 					self.myprint("%s|Bot: %s|SelectZone: %s|Progress: %s" % (getTime(), self.name, self.zone_position, zone["capture_progress"]))
 					break
 		if self.zone_position == -1:
-			self.myprint("%s|Bot: %s|SwitchPlanet|Getting info..." % (getTime(), self.name))
+			# self.myprint("%s|Bot: %s|SwitchPlanet|Getting info..." % (getTime(), self.name))
 			self.getBestPlanet()
 			if "active_planet" in self.playerInfo:
 				if self.bestPlanet != self.playerInfo["active_planet"]:
@@ -381,7 +382,8 @@ def handler(data):
 	try:
 		bot.loadcfg(data)
 	except:
-		print("%s|Bot: %s|LoadConfig|Error!" % (getTime(), data[0]))
+		pass
+		# print("%s|Bot: %s|LoadConfig|Error!" % (getTime(), data[0]))
 	bot.getPlayerInfo()
 	bot.getBestPlanet()
 	while True:
