@@ -224,7 +224,8 @@ class saliens:
 			for player in bossPlayers:
 				if player["accountid"] == self.accountid:
 					myPlayer = player
-					self.myprint("%s|Bot: %s|BossFight|HP: %s/%s" % (getTime(), self.name, player["hp"], player["max_hp"]))
+					curExp = str(int(self.playerInfo["score"])+int(player["xp_earned"]))
+					self.myprint("%s|Bot: %s|BossFight|HP: %s/%s|Exp: %s" % (getTime(), self.name, player["hp"], player["max_hp"], curExp))
 					break
 			if "game_over" in res:
 				if res["game_over"] == True:
@@ -235,6 +236,9 @@ class saliens:
 					self.myprint("%s|Bot: %s|BossFight|WaitingForPlayers" % (getTime(), self.name))
 					continue
 			if myPlayer != None:
+				if int(myPlayer["hp"]) <= 0:
+					# self.myprint("%s|Bot: %s|BossFight|YouDied|RestartInstance" % (getTime(). self.name))
+					break
 				self.myprint("%s|Bot: %s|BossFight|Lv: %s => %s|Exp Earned: %s" % (getTime(), self.name, myPlayer["level_on_join"], myPlayer["new_level"], myPlayer["xp_earned"]))
 			self.myprint("%s|Bot: %s|BossFight|Boss HP: %s/%s|Lasers: %s|Team Heals: %s" % (getTime(), self.name, bossStatus["boss_hp"], bossStatus["boss_max_hp"], res["num_laser_uses"], res["num_team_heals"]))
 			time.sleep(5)
